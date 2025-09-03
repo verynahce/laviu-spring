@@ -1,10 +1,6 @@
-<div>
-<img src="./docs/러닝시연영상.gif" alt="러닝시연" height="500"/>
-<img src="./docs/러닝앱시연영상.gif" alt="러닝시연" height="500"/>
-</div>
 
-# 실무양성심화과정 - 중개플랫폼 웹/앱 : Laviu
-
+# 스트리밍 앱 : Laviu
+<img width="1920" height="1080" alt="포폴용 헤더-나히라뷰" src="https://github.com/user-attachments/assets/384c2137-72b5-4f93-8294-a5ce52ad2b20" />
 - 자바와 스프링부트를 활용하여 Rest API 서버를 제작하였습니다.
 - 전체 개발 기간 : 2025.08.04 ~ 2025.08.26
   <br />
@@ -15,6 +11,10 @@
 
 <img src="https://nimage.g-enews.com/phpwas/restmb_allidxmake.php?idx=5&simg=2023121004092903370c5fa75ef8612254575.jpg" width="150">
 <img src="https://play-lh.googleusercontent.com/p9zXgkP4pkCDVR-dQ2HfcHyD5vg9MTjDLFVpckObdHI9dGiiMO9TldFJ7kc5bgEGwYjo" width="150">
+
+## 시연영상
+
+
 
 # 👥 팀 멤버
 
