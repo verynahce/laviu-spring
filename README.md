@@ -206,44 +206,62 @@ public List<Streams> findAllByQuery(String query) {
             .getResultList();
 }
 ```
-
----
-
 ### 2. 사례 – 팔로잉 등록/삭제 시 중복 및 무결성 문제
 
 **문제**  
-- 팔로잉 등록 시 동일한 유저를 여러 번 팔로우할 수 있어 중복 데이터 발생  
-- 팔로잉 삭제 후 즉시 목록을 조회할 때 캐시/지연로딩 문제로 삭제가 반영되지 않는 현상 발생  
+- 팔로잉 등록 시 동일한 유저를 여러 번 팔로우할 수 있어 중복 데이터가 발생할 수 있음  
+- 팔로잉 삭제 시 본인이 아닌 다른 사용자가 삭제를 시도하면 권한 문제가 발생할 수 있음  
 
 **해결**  
-- DB 테이블에 `(follower_id, following_id)`에 대해 Unique 제약 조건 추가  
-- JPA `save()` 호출 전 중복 여부를 검사  
-- 삭제 후에는 즉시 `flush()` 처리하여 목록 조회 시 최신 상태를 보장  
+- 팔로잉 등록 시 `followerId`와 `followingId`로 중복 여부를 먼저 검사하여 이미 팔로잉 상태라면 예외를 발생  
+- 팔로잉 삭제 시 팔로워 본인만 삭제할 수 있도록 권한 검증을 수행  
+- DB 테이블에도 `(follower_id, following_id)`에 대해 `UNIQUE` 제약 조건을 추가하여 데이터 무결성을 보장  
 
 ```java
-// Repository 예시
-public interface FollowRepository extends JpaRepository<Follow, Long> {
-    boolean existsByFollowerIdAndFollowingId(Long followerId, Long followingId);
-    void deleteByFollowerIdAndFollowingId(Long followerId, Long followingId);
-}
-
 // Service 예시
+
 @Transactional
-public void follow(Long followerId, Long followingId) {
-    if (followRepository.existsByFollowerIdAndFollowingId(followerId, followingId)) {
-        throw new IllegalStateException("이미 팔로잉한 유저입니다.");
+public FollowsResponse.SaveDTO save(Users followerUser, Integer followingId) {
+
+    // 1. 팔로우 대상 유저 확인
+    Users followingUserPS = usersRepository.findById(followingId)
+            .orElseThrow(() -> new ExceptionApi404(ErrorEnum.USER_NOT_FOUND));
+
+    // 2. 이미 팔로잉 중인지 체크
+    Boolean isFollowing = followsRepository.existsByFollowerIdAndFollowingId(
+            followerUser.getId(), followingId);
+    if (isFollowing) {
+        throw new ExceptionApi400(ErrorEnum.ALREADY_FOLLOWING);
     }
-    followRepository.save(new Follow(followerId, followingId));
+
+    // 3. 엔티티 생성 후 저장
+    Follows follow = Follows.builder()
+            .follower(followerUser)
+            .following(followingUserPS)
+            .build();
+
+    Follows followPS = followsRepository.save(follow);
+
+    return new FollowsResponse.SaveDTO(followPS);
 }
 
 @Transactional
-public void unfollow(Long followerId, Long followingId) {
-    followRepository.deleteByFollowerIdAndFollowingId(followerId, followingId);
-    entityManager.flush(); // 즉시 반영
+public void delete(Users user, Integer followId) {
+
+    // 1. 팔로우 관계 조회
+    Follows followPS = followsRepository.findById(followId)
+            .orElseThrow(() -> new ExceptionApi404(ErrorEnum.NOT_FOLLOWING));
+
+    // 2. 권한 체크 (본인만 삭제 가능)
+    if (!followPS.getFollower().getId().equals(user.getId())) {
+        throw new ExceptionApi403(ErrorEnum.NOT_THE_OWNER_OF_FOLLOWING);
+    }
+
+    // 3. 삭제
+    followsRepository.delete(followPS);
 }
 ```
 
----
 
 ### 3. 사례 – 방송 시작 시 스트림 키(UUID) 생성 및 관리 문제
 
