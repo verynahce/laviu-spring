@@ -4,9 +4,9 @@
 
 - 자바와 스프링부트를 활용하여 Rest API 서버를 제작하였습니다.
 - 전체 개발 기간 : 2025.08.04 ~ 2025.08.26
-  <br />
 
 
+  <br>
 ## 프로젝트 소개
 <div style="display: flex; gap: 10px;">
   <img src="https://nimage.g-enews.com/phpwas/restmb_allidxmake.php?idx=5&simg=2023121004092903370c5fa75ef8612254575.jpg" width="150">
@@ -274,11 +274,13 @@ public String generateStreamKey(Long userId) {
 
 <br>
 
-# 화면 와이어프레임
+## 화면 와이어프레임
 [화면 설계 라뷰 (와이어프레임).pdf](https://github.com/user-attachments/files/22168602/default.pdf)
 
 
-# ERD
+  <br>
+  
+## ERD
 
 ![erd](docs/images/erd.png)
 
