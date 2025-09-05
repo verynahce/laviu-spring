@@ -19,12 +19,13 @@
   
 ## 시연영상
 
-이미지 클릭시 영상으로 이동>>
 
-[![Laviu 시연 영상](https://img.youtube.com/vi/_fMoaeDEEHw/0.jpg)](https://youtu.be/_fMoaeDEEHw)
-
-
-<br>
+<p align="center">
+  이미지 클릭시 영상으로 이동 👇 <br><br>
+  <a href="https://youtu.be/_fMoaeDEEHw">
+    <img src="https://img.youtube.com/vi/_fMoaeDEEHw/0.jpg" alt="Laviu 시연 영상">
+  </a>
+</p>
 
 ## ⚙️ 기술 스택
 
